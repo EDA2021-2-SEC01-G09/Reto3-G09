@@ -35,9 +35,12 @@ operación solicitada
 """
 
 def printMenu():
+    print('')
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar el catálogo")
+    print('2- Cargar información en el catálogo')
+    print('3- Mostrar información del Catálogo')
+    print('4- Salir')
 
 catalog = None
 
@@ -48,10 +51,17 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
-
+        print("Inicalizando información de los archivos ....")
+        catalog = controller.initialization()
     elif int(inputs[0]) == 2:
-        pass
+        print("Cargando información de los archivos ....")
+        controller.loadData(catalog)
+    
+    elif int(inputs[0]) == 3:
+        information = controller.catalog_information(catalog)
+        tree_length = information[0]
+        num_sighting = information[1]
+        print('La longitud del árbol RBT es', tree_length, 'y se registraron', num_sighting, 'avistamientos.')
 
     else:
         sys.exit(0)

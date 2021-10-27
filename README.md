@@ -1,5 +1,14 @@
 #ISIS1225 - Librerias de soporte
 
+Reto realizado Individualmente
+
+
+Nombre: Nicolas Merchan Cuestas
+
+Código: 202112109
+
+Correo: n.merchan@uniandes.edu.co
+
 Este proyecto contiene los Tipos abstractos de datos, estructuras de datos y algoritmos requeridos por el curso ISIS1225-Estructuras de Datos y Algoritmos
 
 -Lib
