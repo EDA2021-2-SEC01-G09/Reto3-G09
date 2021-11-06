@@ -36,8 +36,8 @@ operación solicitada
 
 ###############################################################################################################
 
-def PrintRequirement1(city, first_events_list, last_events_list, num_cities,
-                                                               most_events_city, num_events_city):
+def PrintRequirement1(city, first_events_list, last_events_list, 
+                                                        num_cities, most_events_city, num_events_city):
     print('=============== Req No. 1 Inputs ===============')
     print('UFO Sightings in the city of:', city)
     print('')
@@ -45,7 +45,7 @@ def PrintRequirement1(city, first_events_list, last_events_list, num_cities,
     print('There are', num_cities, 'different cities with UFO sightings...')
     print('The city with most UFO sightings is:', most_events_city)
     print('')
-    print('There are', num_events_city, 'sightings at the:', city, ' city.')
+    print('There are', num_events_city, 'sightings at the:', city, 'city.')
     print('The first 3 and last 3 UFO sightings in the city are:')
     print('+' + 22*'-' + '+' + 30*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
     print('| {:<21}| {:<29}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
@@ -124,41 +124,28 @@ catalog = None
 
 def Menu():
     print('')
-    print("Welcome")
-    print("1- Initialize catalog")
-    print('2- Load information from catalog')
-    print('3- Show information from catalog')
-    print('4- Requirement 1')
-    print('5- Requirement 2')
-    print('6- Requirement 3')
-    print('7- Requirement 4')
-    print('8- Requirement 5')
-    print('9- Requirement 6')
-    print('0- Finish program')
+    print('Welcome')
+    print('0- Load information')
+    print('1- Requirement 1')
+    print('2- Requirement 2')
+    print('3- Requirement 3')
+    print('4- Requirement 4')
+    print('5- Requirement 5')
+    print('6- Requirement 6')
+    print('7- Finish program')
     option = int(input('Choose an option: '))
     return option
 
 def UserProgram(test, option, catalog, input_1, input_2, input_3):
     if not test:
         option = Menu()
-        while option != 0:
-            if option == 1:
-                print("initializing Information from UFOS-utf8-small.csv ....")
+        while option != 7:
+            if option == 0:
+                print('Loading Information from UFOS/UFOS-utf8-small.csv ....')
                 catalog = controller.initialization()
-                print('test')
-
-            elif option == 2:
-                print("Loading Information from UFOS-utf8-small.csv ....")
                 controller.loadData(catalog)
-            
-            elif option == 3:
-                information = controller.catalog_information(catalog)
-                tree_length = information[0]
-                num_sighting = information[1]
-                print('The length of the RBT tree is', tree_length, 'there are ',
-                                                                num_sighting, 'events registred.')
                                                             
-            elif option == 4:
+            elif option == 1:
                 city = input('Enter a City: ')
                 print('Loading...')
                 information = controller.Requirement1(catalog, city)
@@ -172,7 +159,7 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
                 PrintRequirement1(city, first_events_list, last_events_list, 
                                                         num_cities, most_events_city, num_events_city)
 
-            elif option == 5:
+            elif option == 2:
                 initial_duration = int(input('Enter the first duration of the interval: '))
                 end_duration = int(input('Enter the last duration of the interval: ')) 
                 print('Loading...')

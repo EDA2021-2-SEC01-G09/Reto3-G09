@@ -45,20 +45,12 @@ def loadData(catalog):
     input_file = csv.DictReader(open(sightings_data, encoding="utf-8"), delimiter=",")
 
     for event in input_file:
-        model.addEventList(catalog, event)
-        model.addDatePostedRBT(catalog, event)
         model.addCity(catalog, event)
+        
     return catalog
 
 ###############################################################################################################
 # Funciones de consulta sobre el catálogo
-###############################################################################################################
-
-def catalog_information(catalog):
-    return model.catalog_information(catalog)
-
-###############################################################################################################
-# Funciones de ordenamiento
 ###############################################################################################################
 
 def Requirement1(catalog, city):
