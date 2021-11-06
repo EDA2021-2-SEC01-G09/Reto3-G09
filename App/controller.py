@@ -46,7 +46,8 @@ def loadData(catalog):
 
     for event in input_file:
         model.addCity(catalog, event)
-        
+        model.addDuration(catalog, event)
+
     return catalog
 
 ###############################################################################################################
@@ -79,11 +80,11 @@ def Requirement2(catalog, initial_duration, end_duration):
     first_events_list = information[0]
     last_events_list = information[1]
     num_durations = information[2]
-    most_duration = information[3]
-    num_events_most_duration = information[4]
+    longest_duration = information[3]
+    num_events_longest_duration = information[4]
     num_events_duration_interval = information[5]
 
     stop_time = time.process_time()
     elapsed_time = (stop_time - start_time)*1000 
 
-    return elapsed_time, first_events_list, last_events_list, num_durations, most_duration, num_events_most_duration, num_events_duration_interval
+    return elapsed_time, first_events_list, last_events_list, num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval

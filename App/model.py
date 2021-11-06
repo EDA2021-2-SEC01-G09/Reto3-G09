@@ -47,7 +47,7 @@ def initialization():
     catalog['cities_map'] = mp.newMap(1400, maptype='PROBING', loadfactor=0.5)
     catalog['cities_list'] = lt.newList('ARRAY_LIST')
     catalog['durations_map'] = mp.newMap(123, maptype='PROBING', loadfactor=0.5)
-    catalog['durations_BST'] = lt.newList('ARRAY_LIST')
+    catalog['durations_BST'] = bst.newMap(cmpFunction1)
     return catalog
 
 ###############################################################################################################
@@ -65,7 +65,7 @@ def addCity(catalog, event):
         bst.put(city_events_BST, event_date, event)
 
     else:
-        city_events_BST = bst.newMap(cmpFunction)
+        city_events_BST = bst.newMap(cmpFunction1)
         bst.put(city_events_BST, event_date, event)
         mp.put(cities_map, city, city_events_BST)
         lt.addLast(cities_list, city)
@@ -73,18 +73,21 @@ def addCity(catalog, event):
 ###############################################################################################################
 
 def addDuration(catalog, event):
-    duration = int(event['duration (seconds)'])
+    city = event['city']
+    country = event['country']
+    country_city = city + country
+    duration = event['duration (seconds)']
     durations_map = catalog['durations_map']
-    durations_list = catalog['durations_list']
+    durations_BST = catalog['durations_BST']
 
     if mp.contains(durations_map, duration):
-        duration_events_RBT = me.getValue(mp.get(durations_map, duration))
-        rbt.put(duration_events_RBT, duration, event)
+        duration_events_BST = me.getValue(mp.get(durations_map, duration))
+        bst.put(duration_events_BST, country_city, event)
     else:
-        duration_events_RBT = rbt.newMap(om.newMap(cmpFunction))
-        rbt.put(duration_events_RBT, duration, event)
-        mp.put(durations_map, duration, duration_events_RBT)
-        lt.addLast(durations_list, duration)
+        duration_events_BST = bst.newMap(cmpFunction2)
+        bst.put(duration_events_BST, country_city, event)
+        mp.put(durations_map, duration, duration_events_BST)
+        bst.put(durations_BST, float(duration), float(duration))
 
 ###############################################################################################################
 # Funciones para creacion de datos
@@ -108,19 +111,38 @@ def getFirstandLastElements(lst, num_positions, comparition):
 
 ###############################################################################################################
 
-#def getMostElement(lst, comparition):
+def getMostElement(lst, map_list, comparition):
+    num_elements_list = lt.size(lst)
+
+    if comparition == '>':
+        most_element = lt.getElement(lst, num_elements_list)
+    else:
+        most_element = lt.getElement(lst, 1)
+
+    most_element_value = me.getValue(mp.get(map_list, str(most_element)))
+
+    return most_element, most_element_value, num_elements_list
+
 
 ###############################################################################################################
 # Funciones utilizadas para comparar elementos dentro de una lista
 ###############################################################################################################
 
-def cmpFunction(key_node_1, key_node_2):
+def cmpFunction1(key_node_1, key_node_2):
     if key_node_1 > key_node_2:
         return 1
     elif key_node_1 < key_node_2:
         return -1
     else:
         return 0
+
+def cmpFunction2(key_node_1, key_node_2):
+    if key_node_1 > key_node_2:
+        return 1
+    elif key_node_1 < key_node_2:
+        return -1
+    else:
+        return 1
 
 ###############################################################################################################
 # Funciones de consulta
@@ -156,42 +178,30 @@ def Requirement1(catalog, city):
 
 def Requirement2(catalog, initial_duration, end_duration):
     durations_map = catalog['durations_map']
-    durations_list = catalog['durations_list']
-    num_durations = lt.size(durations_list)
+    durations_BST = catalog['durations_BST']
+    durations_list = trv.inorder(durations_BST)
 
-    first_events_list = lt.iterator(lt.newList())
-    last_events_list = lt.iterator(lt.newList())
-    most_duration = 0
-    num_events_most_duration = 0
-    num_events_duration_interval = 0
+    longest_duration_info = getMostElement(durations_list, durations_map, '>')
+    longest_duration = longest_duration_info[0]
+    num_events_longest_duration = bst.size(longest_duration_info[1])
+    num_durations = longest_duration_info[2]
 
     index = 1
-    last_duration = 0
-    duration_events_list = lt.newList('ARRAY_LIST')
-    while index <= num_durations and last_duration != end_duration:
+    previous_duration = -1
+    duration_interval_events_list = lt.newList('ARRAY_LIST')
+    while index <= num_durations and previous_duration <= end_duration:
         duration = lt.getElement(durations_list, index)
-        duration_events_RBT = me.getValue(mp.get(durations_map, duration))
-        num_events_individual_duration_interval = rbt.size(duration_events_RBT)
 
         if initial_duration <= duration and duration <= end_duration:
-            individual_duration_events_list = trv.inorder(duration_events_RBT)
-            num_events_duration_interval += num_events_individual_duration_interval
-
-            for event in lt.iterator(individual_duration_events_list):
-                lt.addLast(duration_events_list, event)
-
-        if num_events_individual_duration_interval > num_events_most_duration:
-            num_events_most_duration = num_events_individual_duration_interval
-            most_duration = duration          
-
+            duration_events_list = trv.inorder(me.getValue(mp.get(durations_map, str(duration))))
+            for event in lt.iterator(duration_events_list):
+                lt.addLast(duration_interval_events_list, event)
         index += 1
-        last_duration == duration
+        previous_duration == duration
             
-    if num_events_duration_interval >= 3:
-            first_events_list = lt.iterator(lt.subList(duration_events_list, 0, 3))
-            last_events_list = lt.iterator(lt.subList(duration_events_list, num_events_duration_interval - 2, 3))
-    else:
-        first_events_list = lt.iterator(duration_events_list)
-        last_events_list = first_events_list
+    duration_interval_events_info = getFirstandLastElements(duration_interval_events_list, 3, '>')
+    first_events_list = duration_interval_events_info[0]
+    last_events_list = duration_interval_events_info[1]
+    num_events_duration_interval = duration_interval_events_info[2]
 
-    return  first_events_list, last_events_list, num_durations, most_duration, num_events_most_duration, num_events_duration_interval
+    return first_events_list, last_events_list, num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval
