@@ -203,6 +203,46 @@ def PrintRequirement4(initial_date, end_date, first_events_list, last_events_lis
         print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
 
 ###############################################################################################################
+
+def PrintRequirement5(initial_longitude, end_longitude,initial_latitude, end_latitude, 
+                                                        first_events_list, last_events_list, num_events_area):
+    print('=============== Req No. 5 Inputs ===============')
+    print('UFO Sightings between latitude range of', initial_latitude, 'and', end_latitude)
+    print('plus longitude range of', initial_longitude, 'and', end_longitude)
+    print('')
+    print('=============== Req No. 5 Answer ===============')
+    print('There are', num_events_area, 'different UFO sightings between in the current area')
+    print('The first 5 and last 5 UFO sightings in this time are:')
+    print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+' + 12*'-' + '+' + 12*'-' + '+')
+    print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |{:>11} |{:>11} |'.format('datetime', 'city', 'state', 'country',
+                                                                        'shape', 'duration (seg)', 'latitude', 'longitude'))
+    print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+' + 12*'=' + '+' + 12*'=' + '+')
+    for event in first_events_list:
+        datetime = event['datetime']
+        city = event['city']
+        state = event['state']
+        country = event['country']
+        shape = event['shape']
+        duration = int(float(event['duration (seconds)']))
+        latitude = round(float(event['latitude']), 2)
+        longitude = round(float(event['longitude']), 2)
+        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |{:>11} |{:>11} |'.format(datetime, city, state, country,shape, duration,
+                                                                               latitude, longitude))
+        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+' + 12*'=' + '+' + 12*'=' + '+')
+    for event in last_events_list:
+        datetime = event['datetime']
+        city = event['city']
+        state = event['state']
+        country = event['country']
+        shape = event['shape']
+        duration = int(float(event['duration (seconds)']))
+        latitude = round(float(event['latitude']), 2)
+        longitude = round(float(event['longitude']), 2)
+        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |{:>11} |{:>11} |'.format(datetime, city, state, country,shape, duration,
+                                                                               latitude, longitude))
+        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+' + 12*'=' + '+' + 12*'=' + '+')                                          
+
+###############################################################################################################
 # Menu principal
 ###############################################################################################################
 
@@ -222,7 +262,7 @@ def Menu():
     option = int(input('Choose an option: '))
     return option
 
-def UserProgram(test, option, catalog, input_1, input_2, input_3):
+def UserProgram(test, option, catalog, input_1, input_2, input_3, input_4):
     if not test:
         option = Menu()
         while option != 7:
@@ -305,6 +345,25 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
                 PrintRequirement4(initial_date, end_date, first_events_list, last_events_list, 
                                         num_dates, oldest_date, num_events_oldest_date, num_events_date_interval)
 
+            elif option == 5:
+                initial_longitude = round(float(input('Enter the first longitude of the interval: ')), 2)
+                end_longitude = round(float(input('Enter the last longitude of the interval: ')), 2)
+                initial_latitude = round(float(input('Enter the first latitude of the interval: ')), 2)
+                end_latitude = round(float(input('Enter the last latitude of the interval: ')), 2)
+                print('')
+                print('Loading...')
+                information = controller.Requirement5(catalog, initial_longitude, end_longitude,
+                                                                                    initial_latitude, end_latitude)
+                time_elapsed = information[0]
+                first_events_list = information[1]
+                last_events_list = information[2]
+                num_events_area = information[3]      
+                print('')
+                print('The requirement took', time_elapsed, 'mseg to execute')
+                print('')
+                PrintRequirement5(initial_longitude, end_longitude,initial_latitude, end_latitude, 
+                                                            first_events_list, last_events_list, num_events_area)                                                         
+
             else:
                 print('Please choose a valid option')
             
@@ -322,6 +381,8 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
         elif option == 3:
             return controller.Requirement3(catalog, input_1, input_2)[0]
         elif option == 4:
-            return controller.Requirement4(catalog, input_1, input_2)[0]           
+            return controller.Requirement4(catalog, input_1, input_2)[0]  
+        elif option == 5:
+            return controller.Requirement5(catalog, input_1, input_2, input_3, input_4)[0]
     
-UserProgram(False, 0, catalog, 0, 0, 0)
+UserProgram(False, 0, catalog, 0, 0, 0, 0)

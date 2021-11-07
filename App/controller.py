@@ -49,6 +49,7 @@ def loadData(catalog):
         model.addDuration(catalog, event)
         model.addTime(catalog, event)
         model.addDate(catalog, event)
+        model.addCoordinate(catalog, event)
 
     return catalog
 
@@ -128,3 +129,19 @@ def Requirement4(catalog, initial_date, end_date):
     elapsed_time = (stop_time - start_time)*1000 
 
     return elapsed_time, first_events_list, last_events_list, num_dates, oldest_date, num_events_oldest_date, num_events_date_interval
+
+###############################################################################################################
+
+def Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude):
+    start_time = time.process_time()
+
+    information = model.Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude)
+
+    first_events_list = information[0]
+    last_events_list = information[1]
+    num_events_area = information[2]
+
+    stop_time = time.process_time()
+    elapsed_time = (stop_time - start_time)*1000 
+
+    return elapsed_time, first_events_list, last_events_list, num_events_area

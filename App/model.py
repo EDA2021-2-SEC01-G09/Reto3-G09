@@ -46,7 +46,9 @@ def initialization():
                 'times_map': None,
                 'times_BST': None,
                 'dates_map': None,
-                'dates_BST': None}
+                'dates_BST': None,
+                'latitudes_map': None,
+                'latitudes_BST': None}
 
     catalog['cities_map'] = mp.newMap(1400, maptype='PROBING', loadfactor=0.5)
     catalog['cities_list'] = lt.newList('ARRAY_LIST')
@@ -56,6 +58,8 @@ def initialization():
     catalog['times_BST'] = bst.newMap(cmpFunction1)
     catalog['dates_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
     catalog['dates_BST'] = bst.newMap(cmpFunction1)
+    catalog['latitudes_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['latitudes_BST'] = bst.newMap(cmpFunction1)
 
     return catalog
 
@@ -135,6 +139,23 @@ def addDate(catalog, event):
         bst.put(dates_BST, event_date, event_date)
 
 ###############################################################################################################
+
+def addCoordinate(catalog, event):
+    latitudes_map = catalog['latitudes_map']
+    latitudes_BST = catalog['latitudes_BST']
+    event_longitude = round(float(event['longitude']), 2)
+    event_latitude = round(float(event['latitude']), 2)
+
+    if mp.contains(latitudes_map, str(event_latitude)):
+        latitude_events_BST = me.getValue(mp.get(latitudes_map, str(event_latitude)))
+        bst.put(latitude_events_BST, event_longitude, (event_longitude, event))
+    else:
+        latitude_events_BST = bst.newMap(cmpFunction2)
+        bst.put(latitude_events_BST, event_longitude, (event_longitude, event))
+        mp.put(latitudes_map, str(event_latitude), latitude_events_BST)
+        bst.put(latitudes_BST, event_latitude, event_latitude)
+
+###############################################################################################################
 # Funciones para creacion de datos
 ###############################################################################################################
 
@@ -164,9 +185,9 @@ def getMostElement(lst, map_list, comparition):
     else:
         most_element = lt.getElement(lst, 1)
 
-    most_element_value = me.getValue(mp.get(map_list, str(most_element)))
+    size_most_element_value = bst.size(me.getValue(mp.get(map_list, str(most_element))))
 
-    return most_element, most_element_value, num_elements_list
+    return most_element, size_most_element_value, num_elements_list
 
 ###############################################################################################################
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -229,7 +250,7 @@ def Requirement2(catalog, initial_duration, end_duration):
 
     longest_duration_info = getMostElement(durations_list, durations_map, '>')
     longest_duration = longest_duration_info[0]
-    num_events_longest_duration = bst.size(longest_duration_info[1])
+    num_events_longest_duration = longest_duration_info[1]
     num_durations = longest_duration_info[2]
 
     index = 1
@@ -263,7 +284,7 @@ def Requirement3(catalog, initial_time, end_time):
 
     latest_time_info = getMostElement(times_list, times_map, '>')
     latest_time = latest_time_info[0]
-    num_events_latest_time = bst.size(latest_time_info[1])
+    num_events_latest_time = latest_time_info[1]
     num_times = latest_time_info[2]
 
     index = 1
@@ -298,7 +319,7 @@ def Requirement4(catalog, initial_date, end_date):
 
     oldest_date_info = getMostElement(dates_list, dates_map, '<')
     oldest_date = oldest_date_info[0]
-    num_events_oldest_date = bst.size(oldest_date_info[1])
+    num_events_oldest_date = oldest_date_info[1]
     num_dates = oldest_date_info[2]
 
     index = 1
@@ -321,3 +342,51 @@ def Requirement4(catalog, initial_date, end_date):
     num_events_date_interval = date_interval_events_info[2]
 
     return first_events_list, last_events_list, num_dates, oldest_date, num_events_oldest_date, num_events_date_interval
+
+###############################################################################################################
+
+def Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude):
+    latitudes_map = catalog['latitudes_map']
+    latitudes_BST = catalog['latitudes_BST']
+    latitudes_list = trv.inorder(latitudes_BST)
+    num_latitudes = bst.size(latitudes_BST)
+
+    if initial_longitude > end_longitude:
+        temporal_end_longitude = end_longitude
+        end_longitude = initial_longitude
+        initial_longitude = temporal_end_longitude
+    if initial_latitude > end_latitude:
+        temporal_end_latitude = end_latitude
+        end_latitude = initial_latitude
+        initial_latitude= temporal_end_latitude
+
+    latitude_index = 1
+    previous_latitude = -361
+    area_events_list = lt.newList('ARRAY_LIST')
+    while latitude_index <= num_latitudes and previous_latitude < end_latitude:
+        latitude = lt.getElement(latitudes_list, latitude_index)
+
+        if initial_latitude <= latitude and latitude <= end_latitude:
+            longitudes_list = trv.inorder(me.getValue(mp.get(latitudes_map, str(latitude))))
+            num_longitudes = lt.size(longitudes_list)
+            longitude_index = 1
+            previous_longitude = -361
+            while longitude_index <= num_longitudes and previous_longitude < end_longitude:
+                event_info = lt.getElement(longitudes_list, longitude_index)
+                longitude = event_info[0]
+    
+                if initial_longitude <= longitude and longitude <= end_longitude:
+                    event = event_info[1]
+                    lt.addLast(area_events_list, event)
+
+                longitude_index += 1
+                previous_longitude == latitude
+        latitude_index += 1
+        previous_latitude == latitude
+
+    area_interval_events_info = getFirstandLastElements(area_events_list, 5, '>')
+    first_events_list = area_interval_events_info[0]
+    last_events_list = area_interval_events_info[1]
+    num_events_area = area_interval_events_info[2]
+
+    return first_events_list, last_events_list, num_events_area
