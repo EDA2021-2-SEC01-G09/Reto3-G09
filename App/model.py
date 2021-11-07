@@ -162,7 +162,7 @@ def addCoordinate(catalog, event):
 def getFirstandLastElements(lst, num_positions, comparition):
     num_elements_list = lt.size(lst)
 
-    if num_elements_list >= num_positions:
+    if num_elements_list >= num_positions*2:
         if comparition == '>':
             first_events_list = lt.iterator(lt.subList(lst, 1, num_positions))
             last_events_list = lt.iterator(lt.subList(lst, num_elements_list - (num_positions - 1), num_positions))
@@ -171,7 +171,7 @@ def getFirstandLastElements(lst, num_positions, comparition):
             first_events_list = lt.iterator(lt.subList(lst, num_elements_list - (num_positions - 1), num_positions))
     else:
         first_events_list = lt.iterator(lst)
-        last_events_list = first_events_list
+        last_events_list = lt.iterator(lt.newList())
 
     return first_events_list, last_events_list, num_elements_list
 
