@@ -44,7 +44,9 @@ def initialization():
                 'durations_map': None,
                 'durations_BST': None,
                 'times_map': None,
-                'times_BST': None}
+                'times_BST': None,
+                'dates_map': None,
+                'dates_BST': None}
 
     catalog['cities_map'] = mp.newMap(1400, maptype='PROBING', loadfactor=0.5)
     catalog['cities_list'] = lt.newList('ARRAY_LIST')
@@ -52,6 +54,9 @@ def initialization():
     catalog['durations_BST'] = bst.newMap(cmpFunction1)
     catalog['times_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
     catalog['times_BST'] = bst.newMap(cmpFunction1)
+    catalog['dates_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['dates_BST'] = bst.newMap(cmpFunction1)
+
     return catalog
 
 ###############################################################################################################
@@ -110,6 +115,24 @@ def addTime(catalog, event):
         bst.put(time_events_BST, event_date, event)
         mp.put(times_map, str(event_time), time_events_BST)
         bst.put(times_BST, event_time, event_time)
+
+###############################################################################################################
+
+def addDate(catalog, event):
+    dates_map = catalog['dates_map']
+    dates_BST = catalog['dates_BST']
+    event_date_info = event['datetime']
+    event_date = datetime.strptime(event_date_info[:10], "%Y-%m-%d")
+    event_time = datetime.strptime(event_date_info[11:], "%H:%M:%S")
+
+    if mp.contains(dates_map, str(event_date)):
+        date_events_BST = me.getValue(mp.get(dates_map, str(event_date)))
+        bst.put(date_events_BST, event_time, event)
+    else:
+        date_events_BST = bst.newMap(cmpFunction2)
+        bst.put(date_events_BST, event_time, event)
+        mp.put(dates_map, str(event_date), date_events_BST)
+        bst.put(dates_BST, event_date, event_date)
 
 ###############################################################################################################
 # Funciones para creacion de datos
@@ -263,3 +286,38 @@ def Requirement3(catalog, initial_time, end_time):
     num_events_time_interval = time_interval_events_info[2]
 
     return first_events_list, last_events_list, num_times, latest_time, num_events_latest_time, num_events_time_interval
+
+###############################################################################################################
+
+def Requirement4(catalog, initial_date, end_date):
+    dates_map = catalog['dates_map']
+    dates_BST = catalog['dates_BST']
+    dates_list = trv.inorder(dates_BST)
+    initial_date = datetime.strptime(initial_date, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+    oldest_date_info = getMostElement(dates_list, dates_map, '<')
+    oldest_date = oldest_date_info[0]
+    num_events_oldest_date = bst.size(oldest_date_info[1])
+    num_dates = oldest_date_info[2]
+
+    index = 1
+    previous_date = datetime.strptime('00:00:00', "%H:%M:%S")
+    date_interval_events_list = lt.newList('ARRAY_LIST')
+    while index <= num_dates and previous_date < end_date:
+        date = lt.getElement(dates_list, index)
+
+        if initial_date <= date and date <= end_date:
+            date_events_list = trv.inorder(me.getValue(mp.get(dates_map, str(date))))
+            for event in lt.iterator(date_events_list):
+                lt.addLast(date_interval_events_list, event)
+            
+        index += 1
+        previous_date == date
+            
+    date_interval_events_info = getFirstandLastElements(date_interval_events_list, 3, '>')
+    first_events_list = date_interval_events_info[0]
+    last_events_list = date_interval_events_info[1]
+    num_events_date_interval = date_interval_events_info[2]
+
+    return first_events_list, last_events_list, num_dates, oldest_date, num_events_oldest_date, num_events_date_interval

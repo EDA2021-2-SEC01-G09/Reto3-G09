@@ -48,6 +48,7 @@ def loadData(catalog):
         model.addCity(catalog, event)
         model.addDuration(catalog, event)
         model.addTime(catalog, event)
+        model.addDate(catalog, event)
 
     return catalog
 
@@ -108,3 +109,22 @@ def Requirement3(catalog, initial_time, end_time):
     elapsed_time = (stop_time - start_time)*1000 
 
     return elapsed_time, first_events_list, last_events_list, num_times, latest_time, num_events_latest_time, num_events_time_interval
+
+###############################################################################################################
+
+def Requirement4(catalog, initial_date, end_date):
+    start_time = time.process_time()
+
+    information = model.Requirement4(catalog, initial_date, end_date)
+
+    first_events_list = information[0]
+    last_events_list = information[1]
+    num_dates = information[2]
+    oldest_date = information[3]
+    num_events_oldest_date = information[4]
+    num_events_date_interval = information[5]
+
+    stop_time = time.process_time()
+    elapsed_time = (stop_time - start_time)*1000 
+
+    return elapsed_time, first_events_list, last_events_list, num_dates, oldest_date, num_events_oldest_date, num_events_date_interval
