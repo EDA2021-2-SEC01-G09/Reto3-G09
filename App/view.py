@@ -36,17 +36,7 @@ operación solicitada
 
 ###############################################################################################################
 
-def PrintRequirement1(city, first_events_list, last_events_list, 
-                                                        num_cities, most_events_city, num_events_city):
-    print('=============== Req No. 1 Inputs ===============')
-    print('UFO Sightings in the city of:', city)
-    print('')
-    print('=============== Req No. 1 Answer ===============')
-    print('There are', num_cities, 'different cities with UFO sightings...')
-    print('The city with most UFO sightings is:', most_events_city)
-    print('')
-    print('There are', num_events_city, 'sightings at the:', city, 'city.')
-    print('The first 3 and last 3 UFO sightings in the city are:')
+def PrintTable1(first_events_list, last_events_list):
     print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
     print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
                                                                         'shape', 'duration (seg)'))
@@ -74,145 +64,7 @@ def PrintRequirement1(city, first_events_list, last_events_list,
 
 ###############################################################################################################
 
-def PrintRequirement2(initial_duration, end_duration, first_events_list, last_events_list, 
-                    num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval):
-    print('=============== Req No. 2 Inputs ===============')
-    print('UFO Sightings between', initial_duration, 'and', end_duration, 'seg')
-    print('')
-    print('=============== Req No. 2 Answer ===============')
-    print('There are', num_durations, 'different durations of UFO sightings...')
-    print('The longest UFO sightings are:')
-    print('+' + 21*'-' + '+' + 8*'-' + '+')
-    print('|{:>20} |{:>7} |'.format('duration (seconds)', 'count'))
-    print('+' + 21*'=' + '+' + 8*'=' + '+')
-    print('|{:>20} |{:>7} |'.format(int(longest_duration), num_events_longest_duration))
-    print('+' + 21*'-' + '+' + 8*'-' + '+')
-    print('')
-    print('There are', num_events_duration_interval, 'sightings between:', float(initial_duration), 'and', 
-                                                                    float(end_duration), 'seg of duration')
-    print('The first 3 and last 3 UFO sightings in the duration time are:')
-    print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
-    print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
-                                                                        'shape', 'duration (seg)'))
-    print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in first_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in last_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-
-###############################################################################################################
-
-def PrintRequirement3(initial_time, end_time, first_events_list, last_events_list, 
-                                    num_times, latest_time, num_events_latest_time, num_events_time_interval):
-    print('=============== Req No. 3 Inputs ===============')
-    print('UFO Sightings between', initial_time, 'and', end_time)
-    print('')
-    print('=============== Req No. 3 Answer ===============')
-    print('There are', num_times, 'UFO sightings with different times [hh:mm:ss]...')
-    print('The latest UFO sightings time is:')
-    print('+' + 10*'-' + '+' + 8*'-' + '+')
-    print('|{:^9} |{:>7} |'.format('time', 'count'))
-    print('+' + 10*'=' + '+' + 8*'=' + '+')
-    print('|{:>9} |{:>7} |'.format(str(latest_time)[11:], num_events_latest_time))
-    print('+' + 10*'-' + '+' + 8*'-' + '+')
-    print('')
-    print('There are', num_events_time_interval, 'sightings between:', initial_time, 'and', end_time)
-    print('The first 3 and last 3 UFO sightings in this time are:')
-    print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
-    print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
-                                                                        'shape', 'duration (seg)'))
-    print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in first_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in last_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    
-###############################################################################################################
-
-def PrintRequirement4(initial_date, end_date, first_events_list, last_events_list, 
-                                    num_dates, oldest_date, num_events_oldest_date, num_events_date_interval):
-    print('=============== Req No. 4 Inputs ===============')
-    print('UFO Sightings between', initial_date, 'and', end_date)
-    print('')
-    print('=============== Req No. 4 Answer ===============')
-    print('There are', num_dates, 'UFO sightings with different times [YYYY-MM-DD]...')
-    print('The oldest UFO sightings date is:')
-    print('+' + 12*'-' + '+' + 8*'-' + '+')
-    print('|{:^11} |{:>7} |'.format('date', 'count'))
-    print('+' + 12*'=' + '+' + 8*'=' + '+')
-    print('|{:>11} |{:>7} |'.format(str(oldest_date)[:10], num_events_oldest_date))
-    print('+' + 12*'-' + '+' + 8*'-' + '+')
-    print('')
-    print('There are', num_events_date_interval, 'sightings between:', initial_date, 'and', end_date)
-    print('The first 3 and last 3 UFO sightings in this time are:')
-    print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
-    print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
-                                                                        'shape', 'duration (seg)'))
-    print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in first_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-    for event in last_events_list:
-        datetime = event['datetime']
-        city = event['city']
-        state = event['state']
-        country = event['country']
-        shape = event['shape']
-        duration = int(float(event['duration (seconds)']))
-        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
-                                                                                        shape, duration))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
-
-###############################################################################################################
-
-def PrintRequirement5(initial_longitude, end_longitude,initial_latitude, end_latitude, 
-                                                        first_events_list, last_events_list, num_events_area):
-    print('=============== Req No. 5 Inputs ===============')
-    print('UFO Sightings between latitude range of', initial_latitude, 'and', end_latitude)
-    print('plus longitude range of', initial_longitude, 'and', end_longitude)
-    print('')
-    print('=============== Req No. 5 Answer ===============')
-    print('There are', num_events_area, 'different UFO sightings between in the current area')
-    print('The first 5 and last 5 UFO sightings in this time are:')
+def PrintTable2(first_events_list, last_events_list):
     print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+' + 12*'-' + '+' + 12*'-' + '+')
     print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |{:>11} |{:>11} |'.format('datetime', 'city', 'state', 'country',
                                                                         'shape', 'duration (seg)', 'latitude', 'longitude'))
@@ -240,7 +92,96 @@ def PrintRequirement5(initial_longitude, end_longitude,initial_latitude, end_lat
         longitude = round(float(event['longitude']), 2)
         print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |{:>11} |{:>11} |'.format(datetime, city, state, country,shape, duration,
                                                                                latitude, longitude))
-        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+' + 12*'=' + '+' + 12*'=' + '+')                                          
+        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+' + 12*'=' + '+' + 12*'=' + '+')  
+
+###############################################################################################################
+
+def PrintRequirement1(city, first_events_list, last_events_list, 
+                                                        num_cities, most_events_city, num_events_city):
+    print('=============== Req No. 1 Inputs ===============')
+    print('UFO Sightings in the city of:', city)
+    print('')
+    print('=============== Req No. 1 Answer ===============')
+    print('There are', num_cities, 'different cities with UFO sightings...')
+    print('The city with most UFO sightings is:', most_events_city)
+    print('')
+    print('There are', num_events_city, 'sightings at the:', city, 'city.')
+    print('The first 3 and last 3 UFO sightings in the city are:')
+    PrintTable1(first_events_list, last_events_list)
+
+###############################################################################################################
+
+def PrintRequirement2(initial_duration, end_duration, first_events_list, last_events_list, 
+                    num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval):
+    print('=============== Req No. 2 Inputs ===============')
+    print('UFO Sightings between', initial_duration, 'and', end_duration, 'seg')
+    print('')
+    print('=============== Req No. 2 Answer ===============')
+    print('There are', num_durations, 'different durations of UFO sightings...')
+    print('The longest UFO sightings are:')
+    print('+' + 21*'-' + '+' + 8*'-' + '+')
+    print('|{:>20} |{:>7} |'.format('duration (seconds)', 'count'))
+    print('+' + 21*'=' + '+' + 8*'=' + '+')
+    print('|{:>20} |{:>7} |'.format(int(longest_duration), num_events_longest_duration))
+    print('+' + 21*'-' + '+' + 8*'-' + '+')
+    print('')
+    print('There are', num_events_duration_interval, 'sightings between:', float(initial_duration), 'and', 
+                                                                    float(end_duration), 'seg of duration')
+    print('The first 3 and last 3 UFO sightings in the duration time are:')
+    PrintTable1(first_events_list, last_events_list)
+
+###############################################################################################################
+
+def PrintRequirement3(initial_time, end_time, first_events_list, last_events_list, 
+                                    num_times, latest_time, num_events_latest_time, num_events_time_interval):
+    print('=============== Req No. 3 Inputs ===============')
+    print('UFO Sightings between', initial_time, 'and', end_time)
+    print('')
+    print('=============== Req No. 3 Answer ===============')
+    print('There are', num_times, 'UFO sightings with different times [hh:mm:ss]...')
+    print('The latest UFO sightings time is:')
+    print('+' + 10*'-' + '+' + 8*'-' + '+')
+    print('|{:^9} |{:>7} |'.format('time', 'count'))
+    print('+' + 10*'=' + '+' + 8*'=' + '+')
+    print('|{:>9} |{:>7} |'.format(str(latest_time)[11:], num_events_latest_time))
+    print('+' + 10*'-' + '+' + 8*'-' + '+')
+    print('')
+    print('There are', num_events_time_interval, 'sightings between:', initial_time, 'and', end_time)
+    print('The first 3 and last 3 UFO sightings in this time are:')
+    PrintTable1(first_events_list, last_events_list)
+    
+###############################################################################################################
+
+def PrintRequirement4(initial_date, end_date, first_events_list, last_events_list, 
+                                    num_dates, oldest_date, num_events_oldest_date, num_events_date_interval):
+    print('=============== Req No. 4 Inputs ===============')
+    print('UFO Sightings between', initial_date, 'and', end_date)
+    print('')
+    print('=============== Req No. 4 Answer ===============')
+    print('There are', num_dates, 'UFO sightings with different times [YYYY-MM-DD]...')
+    print('The oldest UFO sightings date is:')
+    print('+' + 12*'-' + '+' + 8*'-' + '+')
+    print('|{:^11} |{:>7} |'.format('date', 'count'))
+    print('+' + 12*'=' + '+' + 8*'=' + '+')
+    print('|{:>11} |{:>7} |'.format(str(oldest_date)[:10], num_events_oldest_date))
+    print('+' + 12*'-' + '+' + 8*'-' + '+')
+    print('')
+    print('There are', num_events_date_interval, 'sightings between:', initial_date, 'and', end_date)
+    print('The first 3 and last 3 UFO sightings in this time are:')
+    PrintTable1(first_events_list, last_events_list)
+
+###############################################################################################################
+
+def PrintRequirement5(initial_longitude, end_longitude,initial_latitude, end_latitude, 
+                                                        first_events_list, last_events_list, num_events_area):
+    print('=============== Req No. 5 Inputs ===============')
+    print('UFO Sightings between latitude range of', initial_latitude, 'and', end_latitude)
+    print('plus longitude range of', initial_longitude, 'and', end_longitude)
+    print('')
+    print('=============== Req No. 5 Answer ===============')
+    print('There are', num_events_area, 'different UFO sightings in the current area')
+    print('The first 5 and last 5 UFO sightings in this time are:')
+    PrintTable2(first_events_list, last_events_list)                                         
 
 ###############################################################################################################
 # Menu principal

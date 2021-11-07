@@ -162,7 +162,7 @@ def addCoordinate(catalog, event):
 def getFirstandLastElements(lst, num_positions, comparition):
     num_elements_list = lt.size(lst)
 
-    if num_elements_list >= num_positions*2:
+    if num_elements_list > num_positions*2:
         if comparition == '>':
             first_events_list = lt.iterator(lt.subList(lst, 1, num_positions))
             last_events_list = lt.iterator(lt.subList(lst, num_elements_list - (num_positions - 1), num_positions))
@@ -177,6 +177,28 @@ def getFirstandLastElements(lst, num_positions, comparition):
 
 ###############################################################################################################
 
+def getElementsIntervalValues(elements_map, values_list, previous_value, num_values, initial_value, end_value):
+    if initial_value > end_value:
+        temporal_end_value = end_value
+        end_value = initial_value
+        initial_value = temporal_end_value
+
+    index = 1
+    interval_values_elements_list = lt.newList('ARRAY_LIST')
+    while index <= num_values and previous_value < end_value:
+        value = lt.getElement(values_list, index)
+
+        if initial_value <= value and value <= end_value:
+            value_elements_list = trv.inorder(me.getValue(mp.get(elements_map, str(value))))
+            for elements in lt.iterator(value_elements_list):
+                lt.addLast(interval_values_elements_list, elements)
+        index += 1
+        previous_value == value
+
+    return interval_values_elements_list
+
+###############################################################################################################
+
 def getMostElement(lst, map_list, comparition):
     num_elements_list = lt.size(lst)
 
@@ -188,6 +210,43 @@ def getMostElement(lst, map_list, comparition):
     size_most_element_value = bst.size(me.getValue(mp.get(map_list, str(most_element))))
 
     return most_element, size_most_element_value, num_elements_list
+
+###############################################################################################################
+
+def getElementsDoubleIntervalValues(elements_map, values_list, previous_value_1, previous_value_2, num_values,
+                                                    initial_value_1, end_value_1, initial_value_2, end_value_2):
+    if initial_value_1 > end_value_1:
+        temporal_end_value_1 = end_value_1
+        end_value_1 = initial_value_1
+        initial_value_1 = temporal_end_value_1
+    if initial_value_2 > end_value_2:
+        temporal_end_value_2 = end_value_2
+        end_value_2 = initial_value_2
+        initial_value_2 = temporal_end_value_2
+
+    index_1 = 1
+    interval_values_elements_list = lt.newList('ARRAY_LIST')
+    while index_1 <= num_values and previous_value_1 < end_value_1:
+        value_1 = lt.getElement(values_list, index_1)
+
+        if initial_value_1 <= value_1 and value_1 <= end_value_1:
+            values_list_2 = trv.inorder(me.getValue(mp.get(elements_map, str(value_1))))
+            num_longitudes = lt.size(values_list_2)
+            index_2 = 1
+            while index_2 <= num_longitudes and previous_value_2 < end_value_2:
+                element_info = lt.getElement(values_list_2, index_2)
+                value_2 = element_info[0]
+    
+                if initial_value_2 <= value_2 and value_2 <= end_value_2:
+                    element = element_info[1]
+                    lt.addLast(interval_values_elements_list, element)
+
+                index_2 += 1
+                previous_value_2 == value_2
+        index_1 += 1
+        previous_value_1 == value_1
+
+    return interval_values_elements_list
 
 ###############################################################################################################
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -253,18 +312,9 @@ def Requirement2(catalog, initial_duration, end_duration):
     num_events_longest_duration = longest_duration_info[1]
     num_durations = longest_duration_info[2]
 
-    index = 1
     previous_duration = -1
-    duration_interval_events_list = lt.newList('ARRAY_LIST')
-    while index <= num_durations and previous_duration < end_duration:
-        duration = lt.getElement(durations_list, index)
-
-        if initial_duration <= duration and duration <= end_duration:
-            duration_events_list = trv.inorder(me.getValue(mp.get(durations_map, str(duration))))
-            for event in lt.iterator(duration_events_list):
-                lt.addLast(duration_interval_events_list, event)
-        index += 1
-        previous_duration == duration
+    duration_interval_events_list = getElementsIntervalValues(durations_map, durations_list, 
+                                            previous_duration, num_durations, initial_duration, end_duration)
             
     duration_interval_events_info = getFirstandLastElements(duration_interval_events_list, 3, '>')
     first_events_list = duration_interval_events_info[0]
@@ -287,19 +337,9 @@ def Requirement3(catalog, initial_time, end_time):
     num_events_latest_time = latest_time_info[1]
     num_times = latest_time_info[2]
 
-    index = 1
     previous_time = datetime.strptime('00:00:00', "%H:%M:%S")
-    time_interval_events_list = lt.newList('ARRAY_LIST')
-    while index <= num_times and previous_time < end_time:
-        time = lt.getElement(times_list, index)
-
-        if initial_time <= time and time <= end_time:
-            time_events_list = trv.inorder(me.getValue(mp.get(times_map, str(time))))
-            for event in lt.iterator(time_events_list):
-                lt.addLast(time_interval_events_list, event)
-            
-        index += 1
-        previous_time == time
+    time_interval_events_list = getElementsIntervalValues(times_map, times_list, previous_time, num_times,
+                                                                                        initial_time, end_time)
             
     time_interval_events_info = getFirstandLastElements(time_interval_events_list, 3, '>')
     first_events_list = time_interval_events_info[0]
@@ -322,20 +362,10 @@ def Requirement4(catalog, initial_date, end_date):
     num_events_oldest_date = oldest_date_info[1]
     num_dates = oldest_date_info[2]
 
-    index = 1
     previous_date = datetime.strptime('00:00:00', "%H:%M:%S")
-    date_interval_events_list = lt.newList('ARRAY_LIST')
-    while index <= num_dates and previous_date < end_date:
-        date = lt.getElement(dates_list, index)
+    date_interval_events_list = getElementsIntervalValues(dates_map, dates_list, previous_date, num_dates,
+                                                                                        initial_date, end_date)
 
-        if initial_date <= date and date <= end_date:
-            date_events_list = trv.inorder(me.getValue(mp.get(dates_map, str(date))))
-            for event in lt.iterator(date_events_list):
-                lt.addLast(date_interval_events_list, event)
-            
-        index += 1
-        previous_date == date
-            
     date_interval_events_info = getFirstandLastElements(date_interval_events_list, 3, '>')
     first_events_list = date_interval_events_info[0]
     last_events_list = date_interval_events_info[1]
@@ -351,38 +381,12 @@ def Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, en
     latitudes_list = trv.inorder(latitudes_BST)
     num_latitudes = bst.size(latitudes_BST)
 
-    if initial_longitude > end_longitude:
-        temporal_end_longitude = end_longitude
-        end_longitude = initial_longitude
-        initial_longitude = temporal_end_longitude
-    if initial_latitude > end_latitude:
-        temporal_end_latitude = end_latitude
-        end_latitude = initial_latitude
-        initial_latitude= temporal_end_latitude
+    previous_value_latitude = -181
+    previous_value_longitude = -181
 
-    latitude_index = 1
-    previous_latitude = -361
-    area_events_list = lt.newList('ARRAY_LIST')
-    while latitude_index <= num_latitudes and previous_latitude < end_latitude:
-        latitude = lt.getElement(latitudes_list, latitude_index)
-
-        if initial_latitude <= latitude and latitude <= end_latitude:
-            longitudes_list = trv.inorder(me.getValue(mp.get(latitudes_map, str(latitude))))
-            num_longitudes = lt.size(longitudes_list)
-            longitude_index = 1
-            previous_longitude = -361
-            while longitude_index <= num_longitudes and previous_longitude < end_longitude:
-                event_info = lt.getElement(longitudes_list, longitude_index)
-                longitude = event_info[0]
-    
-                if initial_longitude <= longitude and longitude <= end_longitude:
-                    event = event_info[1]
-                    lt.addLast(area_events_list, event)
-
-                longitude_index += 1
-                previous_longitude == latitude
-        latitude_index += 1
-        previous_latitude == latitude
+    area_events_list = getElementsDoubleIntervalValues(latitudes_map, latitudes_list, 
+            previous_value_latitude, previous_value_longitude, num_latitudes, initial_latitude, end_latitude,
+            initial_longitude, end_longitude)
 
     area_interval_events_info = getFirstandLastElements(area_events_list, 5, '>')
     first_events_list = area_interval_events_info[0]
