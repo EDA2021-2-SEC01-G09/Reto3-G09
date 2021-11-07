@@ -42,12 +42,16 @@ def initialization():
     catalog = { 'cities_list': None,
                 'cities_map': None,
                 'durations_map': None,
-                'durations_BST': None}
+                'durations_BST': None,
+                'times_map': None,
+                'times_BST': None}
 
     catalog['cities_map'] = mp.newMap(1400, maptype='PROBING', loadfactor=0.5)
     catalog['cities_list'] = lt.newList('ARRAY_LIST')
-    catalog['durations_map'] = mp.newMap(123, maptype='PROBING', loadfactor=0.5)
+    catalog['durations_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
     catalog['durations_BST'] = bst.newMap(cmpFunction1)
+    catalog['times_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['times_BST'] = bst.newMap(cmpFunction1)
     return catalog
 
 ###############################################################################################################
@@ -65,7 +69,7 @@ def addCity(catalog, event):
         bst.put(city_events_BST, event_date, event)
 
     else:
-        city_events_BST = bst.newMap(cmpFunction1)
+        city_events_BST = bst.newMap(cmpFunction2)
         bst.put(city_events_BST, event_date, event)
         mp.put(cities_map, city, city_events_BST)
         lt.addLast(cities_list, city)
@@ -88,6 +92,24 @@ def addDuration(catalog, event):
         bst.put(duration_events_BST, country_city, event)
         mp.put(durations_map, duration, duration_events_BST)
         bst.put(durations_BST, float(duration), float(duration))
+
+###############################################################################################################
+
+def addTime(catalog, event):
+    times_map = catalog['times_map']
+    times_BST = catalog['times_BST']
+    event_date_info = event['datetime']
+    event_date = datetime.strptime(event_date_info[:10], "%Y-%m-%d")
+    event_time = datetime.strptime(event_date_info[11:], "%H:%M:%S")
+
+    if mp.contains(times_map, str(event_time)):
+        time_events_BST = me.getValue(mp.get(times_map, str(event_time)))
+        bst.put(time_events_BST, event_date, event)
+    else:
+        time_events_BST = bst.newMap(cmpFunction2)
+        bst.put(time_events_BST, event_date, event)
+        mp.put(times_map, str(event_time), time_events_BST)
+        bst.put(times_BST, event_time, event_time)
 
 ###############################################################################################################
 # Funciones para creacion de datos
@@ -123,7 +145,6 @@ def getMostElement(lst, map_list, comparition):
 
     return most_element, most_element_value, num_elements_list
 
-
 ###############################################################################################################
 # Funciones utilizadas para comparar elementos dentro de una lista
 ###############################################################################################################
@@ -135,6 +156,8 @@ def cmpFunction1(key_node_1, key_node_2):
         return -1
     else:
         return 0
+
+###############################################################################################################
 
 def cmpFunction2(key_node_1, key_node_2):
     if key_node_1 > key_node_2:
@@ -189,7 +212,7 @@ def Requirement2(catalog, initial_duration, end_duration):
     index = 1
     previous_duration = -1
     duration_interval_events_list = lt.newList('ARRAY_LIST')
-    while index <= num_durations and previous_duration <= end_duration:
+    while index <= num_durations and previous_duration < end_duration:
         duration = lt.getElement(durations_list, index)
 
         if initial_duration <= duration and duration <= end_duration:
@@ -205,3 +228,38 @@ def Requirement2(catalog, initial_duration, end_duration):
     num_events_duration_interval = duration_interval_events_info[2]
 
     return first_events_list, last_events_list, num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval
+
+###############################################################################################################
+
+def Requirement3(catalog, initial_time, end_time):
+    times_map = catalog['times_map']
+    times_BST = catalog['times_BST']
+    times_list = trv.inorder(times_BST)
+    initial_time = datetime.strptime(initial_time, "%H:%M:%S")
+    end_time = datetime.strptime(end_time, "%H:%M:%S")
+
+    latest_time_info = getMostElement(times_list, times_map, '>')
+    latest_time = latest_time_info[0]
+    num_events_latest_time = bst.size(latest_time_info[1])
+    num_times = latest_time_info[2]
+
+    index = 1
+    previous_time = datetime.strptime('00:00:00', "%H:%M:%S")
+    time_interval_events_list = lt.newList('ARRAY_LIST')
+    while index <= num_times and previous_time < end_time:
+        time = lt.getElement(times_list, index)
+
+        if initial_time <= time and time <= end_time:
+            time_events_list = trv.inorder(me.getValue(mp.get(times_map, str(time))))
+            for event in lt.iterator(time_events_list):
+                lt.addLast(time_interval_events_list, event)
+            
+        index += 1
+        previous_time == time
+            
+    time_interval_events_info = getFirstandLastElements(time_interval_events_list, 3, '>')
+    first_events_list = time_interval_events_info[0]
+    last_events_list = time_interval_events_info[1]
+    num_events_time_interval = time_interval_events_info[2]
+
+    return first_events_list, last_events_list, num_times, latest_time, num_events_latest_time, num_events_time_interval

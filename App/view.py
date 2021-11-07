@@ -117,6 +117,49 @@ def PrintRequirement2(initial_duration, end_duration, first_events_list, last_ev
         print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
 
 ###############################################################################################################
+
+def PrintRequirement3(initial_time, end_time, first_events_list, last_events_list, 
+                                    num_times, latest_time, num_events_latest_time, num_events_time_interval):
+    print('=============== Req No. 3 Inputs ===============')
+    print('UFO Sightings between', initial_time, 'and', end_time)
+    print('')
+    print('=============== Req No. 3 Answer ===============')
+    print('There are', num_times, 'UFO sightings with different times [hh:mm:ss]...')
+    print('The longest UFO sightings are:')
+    print('+' + 10*'-' + '+' + 8*'-' + '+')
+    print('|{:^9} |{:>7} |'.format('time', 'count'))
+    print('+' + 10*'=' + '+' + 8*'=' + '+')
+    print('|{:>9} |{:>7} |'.format(str(latest_time)[11:], num_events_latest_time))
+    print('+' + 10*'-' + '+' + 8*'-' + '+')
+    print('')
+    print('There are', num_events_time_interval, 'sightings between:', initial_time, 'and', end_time)
+    print('The first 3 and last 3 UFO sightings in this time are:')
+    print('+' + 22*'-' + '+' + 50*'-' + '+' + 10*'-'+ '+' + 10*'-' + '+' + 11*'-' + '+' + 16*'-' + '+')
+    print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format('datetime', 'city', 'state', 'country',
+                                                                        'shape', 'duration (seg)'))
+    print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
+    for event in first_events_list:
+        datetime = event['datetime']
+        city = event['city']
+        state = event['state']
+        country = event['country']
+        shape = event['shape']
+        duration = int(float(event['duration (seconds)']))
+        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
+                                                                                        shape, duration))
+        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
+    for event in last_events_list:
+        datetime = event['datetime']
+        city = event['city']
+        state = event['state']
+        country = event['country']
+        shape = event['shape']
+        duration = int(float(event['duration (seconds)']))
+        print('| {:<21}| {:<49}| {:<9}| {:<9}| {:<10}|{:>15} |'.format(datetime, city, state, country,
+                                                                                        shape, duration))
+        print('+' + 22*'=' + '+' + 50*'=' + '+' + 10*'=' + '+' + 10*'=' + '+' + 11*'=' + '+' + 16*'=' + '+')
+
+###############################################################################################################
 # Menu principal
 ###############################################################################################################
 
@@ -157,7 +200,7 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
                 most_events_city = information[4]
                 num_events_city = information[5]
                 print('')
-                print('The requiremnt took', time_elapsed, 'mseg to execute')
+                print('The requirement took', time_elapsed, 'mseg to execute')
                 print('')
                 PrintRequirement1(city, first_events_list, last_events_list, 
                                                         num_cities, most_events_city, num_events_city)
@@ -176,10 +219,29 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
                 num_events_longest_duration = information[5]
                 num_events_duration_interval = information[6]
                 print('')
-                print('The requiremnt took', time_elapsed, 'mseg to execute')
+                print('The requirement took', time_elapsed, 'mseg to execute')
                 print('')
                 PrintRequirement2(initial_duration, end_duration, first_events_list, last_events_list, 
                     num_durations, longest_duration, num_events_longest_duration, num_events_duration_interval)
+
+            elif option == 3:
+                initial_time = input('Enter the first time of the interval [hh:mm:ss]: ')
+                end_time = input('Enter the last time of the interval [hh:mm:ss]: ')
+                print('')
+                print('Loading...')
+                information = controller.Requirement3(catalog, initial_time, end_time)
+                time_elapsed = information[0]
+                first_events_list = information[1]
+                last_events_list = information[2]
+                num_times = information[3]
+                latest_time = information[4]
+                num_events_latest_time = information[5]
+                num_events_time_interval = information[6]
+                print('')
+                print('The requirement took', time_elapsed, 'mseg to execute')
+                print('')
+                PrintRequirement3(initial_time, end_time, first_events_list, last_events_list, 
+                                        num_times, latest_time, num_events_latest_time, num_events_time_interval)
 
             else:
                 print('Please choose a valid option')
@@ -195,6 +257,8 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3):
             return controller.Requirement1(catalog, input_1)[0]
         elif option == 2:
             return controller.Requirement2(catalog, input_1, input_2)[0]
+        elif option == 3:
+            return controller.Requirement3(catalog, input_1, input_2)[0]
            
     
 UserProgram(False, 0, catalog, 0, 0, 0)
