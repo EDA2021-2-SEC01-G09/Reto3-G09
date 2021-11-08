@@ -23,16 +23,14 @@
  *
  * Dario Correal - Version inicial
  """
+from DISClib.DataStructures import mapentry as me
 import DISClib.Algorithms.Trees.traversal as trv
-import config as cf
+from DISClib.DataStructures import bst as bst
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
-from DISClib.DataStructures import bst as bst
-from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
 from datetime import datetime
+import config as cf
 assert cf
-import DISClib.DataStructures.heap as hp
 
 ###############################################################################################################
 # Construccion de modelos
@@ -394,3 +392,20 @@ def Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, en
     num_events_area = area_interval_events_info[2]
 
     return first_events_list, last_events_list, num_events_area
+
+###############################################################################################################
+
+def Requirement6(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude):
+    latitudes_map = catalog['latitudes_map']
+    latitudes_BST = catalog['latitudes_BST']
+    latitudes_list = trv.inorder(latitudes_BST)
+    num_latitudes = bst.size(latitudes_BST)
+
+    previous_value_latitude = -181
+    previous_value_longitude = -181
+
+    area_events_list = lt.iterator(getElementsDoubleIntervalValues(latitudes_map, latitudes_list, 
+            previous_value_latitude, previous_value_longitude, num_latitudes, initial_latitude, end_latitude,
+            initial_longitude, end_longitude))
+
+    return area_events_list

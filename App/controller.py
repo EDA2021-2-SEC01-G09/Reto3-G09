@@ -145,3 +145,15 @@ def Requirement5(catalog, initial_longitude, end_longitude, initial_latitude, en
     elapsed_time = (stop_time - start_time)*1000 
 
     return elapsed_time, first_events_list, last_events_list, num_events_area
+
+###############################################################################################################
+
+def Requirement6(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude):
+    start_time = time.process_time()
+
+    area_events_list = model.Requirement6(catalog, initial_longitude, end_longitude, initial_latitude, end_latitude)
+
+    stop_time = time.process_time()
+    elapsed_time = (stop_time - start_time)*1000 
+
+    return elapsed_time, area_events_list
