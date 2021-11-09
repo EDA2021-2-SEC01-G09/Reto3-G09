@@ -37,14 +37,12 @@ def initialization():
 # Funciones para la carga de datos
 ###############################################################################################################
 
-def loadData(catalog):
-    """
-    Carga los datos de los archivos CSV en el modelo
-    """
-    sightings_data = cf.data_dir + 'UFOS/UFOS-utf8-small.csv'
+def loadData(catalog, sample_size):
+    sightings_data = cf.data_dir + 'UFOS/UFOS-utf8-large.csv'
     input_file = csv.DictReader(open(sightings_data, encoding="utf-8"), delimiter=",")
+    reduced_list = list(input_file)[:sample_size]
 
-    for event in input_file:
+    for event in reduced_list:
         model.addCity(catalog, event)
         model.addDuration(catalog, event)
         model.addTime(catalog, event)

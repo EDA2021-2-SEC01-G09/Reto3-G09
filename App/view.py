@@ -19,20 +19,17 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
+
 import folium as fl
 import config as cf
 import controller
+import sys
 assert cf
 
-
-
-"""
-La vista se encarga de la interacción con el usuario
-Presenta el menu de opciones y por cada seleccion
-se hace la solicitud al controlador para ejecutar la
-operación solicitada
-"""
-
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
+###############################################################################################################
+# Exposición de resultados
 ###############################################################################################################
 
 def PrintTable1(first_events_list, last_events_list):
@@ -226,9 +223,11 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3, input_4):
         option = Menu()
         while option != 7:
             if option == 0:
-                print('Loading Information from UFOS/UFOS-utf8-small.csv ....')
+                print('There exist 80332 sightings registred in UFOS-utf8-large.csv')
+                sample_size = int(input('Enter the number of sightings to load: '))
+                print('Loading Information from UFOS-utf8-large.csv...')
                 catalog = controller.initialization()
-                controller.loadData(catalog)
+                controller.loadData(catalog, sample_size)
                                                             
             elif option == 1:
                 city = input('Enter a City: ')
@@ -349,7 +348,7 @@ def UserProgram(test, option, catalog, input_1, input_2, input_3, input_4):
     else:
         if option == 0:
            catalog = controller.initialization()
-           controller.loadData(catalog)
+           controller.loadData(catalog, input_1)
            return  catalog
         elif option == 1:
             return controller.Requirement1(catalog, input_1)[0]

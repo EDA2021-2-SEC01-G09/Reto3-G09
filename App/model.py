@@ -23,6 +23,7 @@
  *
  * Dario Correal - Version inicial
  """
+ 
 from DISClib.DataStructures import mapentry as me
 import DISClib.Algorithms.Trees.traversal as trv
 from DISClib.DataStructures import bst as bst
@@ -47,16 +48,15 @@ def initialization():
                 'dates_BST': None,
                 'latitudes_map': None,
                 'latitudes_BST': None}
-
-    catalog['cities_map'] = mp.newMap(1400, maptype='PROBING', loadfactor=0.5)
+    catalog['cities_map'] = mp.newMap(19900, maptype='PROBING', loadfactor=0.5)
     catalog['cities_list'] = lt.newList('ARRAY_LIST')
-    catalog['durations_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['durations_map'] = mp.newMap(533, maptype='PROBING', loadfactor=0.5)
     catalog['durations_BST'] = bst.newMap(cmpFunction1)
-    catalog['times_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['times_map'] = mp.newMap(1390, maptype='PROBING', loadfactor=0.5)
     catalog['times_BST'] = bst.newMap(cmpFunction1)
-    catalog['dates_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['dates_map'] = mp.newMap(10525, maptype='PROBING', loadfactor=0.5)
     catalog['dates_BST'] = bst.newMap(cmpFunction1)
-    catalog['latitudes_map'] = mp.newMap(1000, maptype='PROBING', loadfactor=0.5)
+    catalog['latitudes_map'] = mp.newMap(3842, maptype='PROBING', loadfactor=0.5)
     catalog['latitudes_BST'] = bst.newMap(cmpFunction1)
 
     return catalog
